@@ -1,0 +1,98 @@
+#!/usr/bin/python
+
+'''
+Hiera external inventory script
+=================================
+
+Ansible has a feature where instead of reading from /etc/ansible/hosts
+as a text file, it can query external programs to obtain the list
+of hosts, groups the hosts are in, and even variables to assign to each host.
+
+To use this, copy this file over /etc/ansible/hosts and chmod +x the file.
+This, more or less, allows you to keep one central database containing
+info about all of your managed instances.
+
+'''
+# thanks to the cobbler importer[1] for reference
+# https://raw.github.com/ansible/ansible/devel/plugins/inventory/cobbler.py for reference
+
+import os
+import yaml
+import argparse 
+import datetime
+try:
+    import json
+except ImportError:
+    import simplejson as json
+
+HIERADATA='/etc/hieradata/nodes'
+COMMON_VARS='common.yaml'
+class DatetimeEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, datetime.datetime):
+            return list(obj.timetuple())[0:6]
+        if isinstance(obj, datetime.date):
+            return list(obj.timetuple())[0:3]
+        return json.JSONEncoder.default(self, obj)
+
+class HieraInventory(object):
+
+    def __init__(self):
+        ''' Main Execution '''
+
+        data_dir = HIERADATA
+        self.args = self.parse_args()
+        self.inventory = self.get_inventory(data_dir)  # A list of groups and the hosts in that group
+        self.cache = dict()  # Details about hosts in the inventory
+        if self.args.host:
+            print json.dumps({}, sort_keys=True, indent=2)
+        elif self.args.list:
+            print json.dumps(self.inventory, sort_keys=True, indent=2)
+
+    def get_inventory(self, data_dir):
+        inventory = dict()
+        inventory['_meta']    = { 'hostvars': dict() }
+        inventory['lroot']    = {'hosts': [], 'vars': dict() }
+        inventory['icann']    = {'hosts': [], 'vars': dict() }
+        inventory['enabled']  = {'hosts': [], 'vars': dict() }
+        inventory['disabled'] = {'hosts': [], 'vars': dict() }
+        inventory['unknown']  = {'hosts': [], 'vars': dict() }
+        inventory['nostatus'] = {'hosts': [], 'vars': dict() }
+
+        for node in os.listdir(data_dir):
+            file_path = os.path.join(data_dir, node)
+            if os.path.isfile(file_path) and node.endswith('.yaml') and len(node.split('.')) > 2:
+                fqdn = node.rstrip('.yaml')
+                domain = '.'.join(fqdn.rsplit('.',3)[1:])
+                host_yaml = yaml.load(open(file_path, 'r'))
+                if 'network::interfaces' not in host_yaml:
+                    #this should stop us from including files that are not nodes
+                    continue
+                if domain == 'l.root-servers.org':
+                    inventory['lroot']['hosts'].append(fqdn)
+                elif domain == 'dns.icann.org':
+                    inventory['icann']['hosts'].append(fqdn)
+                else:
+                    inventory['unknown']['hosts'].append(fqdn)
+                if 'status' in host_yaml:
+                    if host_yaml['status']['operational']:
+                        inventory['enabled']['hosts'].append(fqdn)
+                    else:
+                        inventory['disabled']['hosts'].append(fqdn)
+                else:
+                    inventory['nostatus']['hosts'].append(fqdn)
+                #this works but we dont use it and its pretty intensive
+                #host_json = json.dumps(host_yaml, cls=DatetimeEncoder)
+                #inventory['_meta']['hostvars'][fqdn] = host_json
+
+        return inventory
+
+    def parse_args(self):
+        ''' Command line argument processing '''
+
+        parser = argparse.ArgumentParser(description='Produce an Ansible Inventory file based on Cobbler')
+        parser.add_argument('--list', action='store_true', default=True, help='List instances (default: True)')
+        parser.add_argument('--host', action='store_true', help='Get all the variables about a specific instance')
+        return parser.parse_args()
+
+HieraInventory()
