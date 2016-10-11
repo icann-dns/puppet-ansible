@@ -35,7 +35,7 @@ deploy:
   provider: puppetforge
   deploy:
     branch: ha-bug-puppet-forge
-  user: puppet
+  user: icann
   password:
     secure: ""
   on:
