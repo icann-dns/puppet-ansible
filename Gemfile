@@ -38,6 +38,7 @@ group :development do
 end
 
 group :system_tests do
+  gem 'beaker', '<= 2.51.0',           :require => false if RUBY_VERSION < '2.2.5'
   if beaker_version = ENV['BEAKER_VERSION']
     gem 'beaker', *location_for(beaker_version)
   end
