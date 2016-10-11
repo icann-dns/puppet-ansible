@@ -9,7 +9,7 @@ matrix:
   include:
   - rvm: 2.2.5
     env:
-    - PUPPET_GEM_VERSION="~> 4.4"
+    - PUPPET_GEM_VERSION="~> 4.7"
     - STRICT_VARIABLES="yes"
     - CUSTOM_RUBY_VERSION=2.2.5
   - rvm: 2.2.5
@@ -19,7 +19,7 @@ matrix:
     - CUSTOM_RUBY_VERSION=2.2.5
   - rvm: 2.1.6
     env:
-    - PUPPET_GEM_VERSION="~> 4.4"
+    - PUPPET_GEM_VERSION="~> 4.7"
     - STRICT_VARIABLES="yes"
     - CUSTOM_RUBY_VERSION=2.1.6
   - rvm: 2.1.6
@@ -29,7 +29,7 @@ matrix:
     - CUSTOM_RUBY_VERSION=2.1.6
   - rvm: 2.1.1
     env:
-    - PUPPET_GEM_VERSION="~> 4.4"
+    - PUPPET_GEM_VERSION="~> 4.7"
     - STRICT_VARIABLES="yes"
     - CUSTOM_RUBY_VERSION=2.1.1
   - rvm: 2.1.1
