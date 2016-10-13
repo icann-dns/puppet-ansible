@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/icann-ansible/puppet-ansible.svg?branch=master)](https://travis-ci.org/icann-ansible/puppet-ansible)
+[![Build Status](https://travis-ci.org/icann-dns/puppet-ansible.svg?branch=master)](https://travis-ci.org/icann-dns/puppet-ansible)
 [![Puppet Forge](https://img.shields.io/puppetforge/v/icann/ansible.svg?maxAge=2592000)](https://forge.puppet.com/icann/ansible)
 [![Puppet Forge Downloads](https://img.shields.io/puppetforge/dt/icann/ansible.svg?maxAge=2592000)](https://forge.puppet.com/icann/ansible)
 # ansible
