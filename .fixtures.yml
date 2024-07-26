@@ -1,10 +1,8 @@
 fixtures:
-    symlinks:
-      ansible: "#{source_dir}"
     repositories:
       stdlib:
         repo: https://github.com/puppetlabs/puppetlabs-stdlib.git
-        ref: 4.12.0
-      tea:
-        repo: https://github.com/icann-dns/puppet-tea
-        ref: 0.2.4
+        ref: v8.1.0
+      vcsrepo:
+        repo: https://github.com/icann-dns/puppetlabs-vcsrepo.git
+        ref: 'v5.0.0'
