@@ -1,6 +1,6 @@
 {
   "name": "icann-ansible",
-  "version": "0.1.3",
+  "version": "0.2.0",
   "author": "john.bond@icann.org",
   "summary": "small modules to install ansible and custom modules",
   "license": "MPL-2.0",
