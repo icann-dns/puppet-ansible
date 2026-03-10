@@ -15,7 +15,7 @@ class ansible (
   Stdlib::Unixpath  $base_dir           = '/srv/ansible',
   Stdlib::Unixpath  $ansible_vault_path = "${base_dir}/.ANSIBLE_VAULT_PASS",
 ) {
-  ensure_packages(['ansible'])
+  stdlib::ensure_packages(['ansible'])
   file { $base_dir:
     ensure => directory,
     owner  => $checkout_user,
